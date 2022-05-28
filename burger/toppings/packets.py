@@ -458,7 +458,7 @@ class PacketsTopping(Topping):
                     # Connection state doesn't need to be represented directly,
                     # since we don't actually use the object once it's fully
                     # constructed
-                    return object()
+                    return UnknownValue("Connection state")
                 if const.name == packet_list:
                     # PacketList is just a list
                     return []

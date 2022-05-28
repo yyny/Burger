@@ -498,6 +498,23 @@ class WalkerCallback(ABC):
         """
         raise Exception("Unexpected invokedynamic: %s" % str(ins))
 
+class UnknownValue:
+    def __init__(self, name = None):
+        import sys
+        co = sys._getframe(1).f_code
+        location = "File \"%s\", line %d" % (co.co_filename, co.co_firstlineno)
+        if name:
+            name = "%s (%s)" % (name, location)
+        else:
+            name = location
+        self.name = name
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "UnknownValue(%r)" % str(self.name)
+
 def walk_method(cf, method, callback, verbose, input_args=None):
     """
     Walks through a method, evaluating instructions and using the callback
@@ -514,7 +531,7 @@ def walk_method(cf, method, callback, verbose, input_args=None):
 
     if not method.access_flags.acc_static:
         # TODO: allow specifying this
-        locals[cur_index] = object()
+        locals[cur_index] = UnknownValue("`this` object of non-static method")
         cur_index += 1
 
     if input_args != None:
@@ -524,7 +541,7 @@ def walk_method(cf, method, callback, verbose, input_args=None):
             cur_index += 1
     else:
         for arg in method.args:
-            locals[cur_index] = object()
+            locals[cur_index] = UnknownValue("method argument")
             cur_index += 1
 
     ins_list = list(method.code.disassemble())

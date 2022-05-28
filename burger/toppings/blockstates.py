@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from burger.util import UnknownValue
 from .topping import Topping
 
 from jawa.constants import *
@@ -98,10 +99,10 @@ class BlockStateTopping(Topping):
                     const = ins.operands[0]
                     type_name = const.name.value
                     assert type_name == blockstatecontainer
-                    stack.append(object())
+                    stack.append(UnknownValue("NEW result"))
                 elif ins == "aload" and ins.operands[0].value == 1:
                     assert is_18w19a # The parameter is only used in 18w19a and above
-                    stack.append(object())
+                    stack.append(UnknownValue("ALOAD result"))
                 elif ins in ("sipush", "bipush"):
                     stack.append(ins.operands[0].value)
                 elif ins in ("anewarray", "newarray"):
@@ -199,7 +200,7 @@ class BlockStateTopping(Topping):
                     assert is_18w19a # We only return void in 18w19a
                 elif ins == "aload":
                     assert ins.operands[0].value == 0 # Should be aload_0 (this)
-                    stack.append(object())
+                    stack.append(UnknownValue("ALOAD result"))
                 elif verbose:
                     print("%s createBlockState contains unimplemented ins %s" % (name, ins))
 
@@ -282,7 +283,7 @@ class BlockStateTopping(Topping):
             elif cls == aggregate["classes"].get("sounds.list"):
                 # If we already know what the sounds list class is, just ignore it
                 # as going through it would take a while for no reason
-                return object()
+                return UnknownValue("ignored value")
 
             cf = classloader[cls]
 
@@ -340,7 +341,7 @@ class BlockStateTopping(Topping):
                     if not target.startswith("java/"):
                         stack.append(find_field(target, name))
                     else:
-                        stack.append(object())
+                        stack.append(UnknownValue("GETSTATIC result"))
                 elif ins in ("ldc", "ldc_w", "ldc2_w"):
                     const = ins.operands[0]
 
@@ -426,7 +427,7 @@ class BlockStateTopping(Topping):
                             # isn't
                             stack.append(obj["enum_ordinal"])
                         else:
-                            o = object()
+                            o = UnknownValue("INVOKESTATIC result")
                             stack.append(o)
                 elif ins in ("istore", "lstore", "fstore", "dstore", "astore"):
                     # Store other than array store

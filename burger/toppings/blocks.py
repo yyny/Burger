@@ -26,7 +26,7 @@ from .topping import Topping
 from jawa.constants import *
 from jawa.util.descriptor import method_descriptor
 
-from burger.util import WalkerCallback, walk_method, try_eval_lambda
+from burger.util import UnknownValue, WalkerCallback, walk_method, try_eval_lambda
 
 import six.moves
 
@@ -233,7 +233,7 @@ class BlocksTopping(Topping):
                         # Probably getting the air identifier from the registry
                         return "air"
                     elif desc.returns.name != "void":
-                        return object()
+                        return UnknownValue("Unknown INVOKE result in `blocks` topping")
 
             def on_get_field(self, ins, const, obj):
                 if const.class_.name.value == superclass:
@@ -246,7 +246,7 @@ class BlocksTopping(Topping):
                     # can evaluate (it depends on the block state).
                     return None
                 else:
-                    return object()
+                    return UnknownValue("Unknown GETFIELD result in `blocks` topping")
 
             def on_put_field(self, ins, const, obj, value):
                 if isinstance(value, dict):
@@ -269,14 +269,14 @@ class BlocksTopping(Topping):
                 if desc.returns.name == "java/util/function/ToIntFunction":
                     # Try to invoke the function.
                     try:
-                        args.append(object()) # The state that the lambda gets
+                        args.append(UnknownValue("Lambda state")) # The state that the lambda gets
                         return try_eval_lambda(ins, args, lcf)
                     except Exception as ex:
                         if verbose:
                             print("Failed to call lambda for light data:", ex)
                         return None
                 else:
-                    return object()
+                    return UnknownValue("INVOKEDYNAMIC result")
 
         walk_method(lcf, method, Walker(), verbose)
 
@@ -398,14 +398,14 @@ class BlocksTopping(Topping):
                         # Probably getting the air identifier from the registry
                         return "air"
                     elif desc.returns.name != "void":
-                        return object()
+                        return UnknownValue("INVOKE result")
 
             def on_get_field(self, ins, const, obj):
                 if const.class_.name == superclass:
                     # Probably getting the static AIR resource location
                     return "air"
                 else:
-                    return object()
+                    return UnknownValue("GETFIELD result")
 
             def on_put_field(self, ins, const, obj, value):
                 raise Exception("unexpected putfield: %s" % ins)

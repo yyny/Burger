@@ -1,7 +1,7 @@
 import six
 
 from .topping import Topping
-from burger.util import WalkerCallback, walk_method, string_from_invokedymanic
+from burger.util import UnknownValue, WalkerCallback, walk_method, string_from_invokedymanic
 
 from jawa.constants import *
 from jawa.util.descriptor import method_descriptor
@@ -131,10 +131,10 @@ class EntityMetadataTopping(Topping):
                         return dataserializers_by_field[const.name_and_type.name.value]
 
                 def on_invokedynamic(self, ins, const, args):
-                    return object()
+                    return UnknownValue("INVOKEDYNAMIC result")
 
                 def on_new(self, ins, const):
-                    return object()
+                    return UnknownValue("NEW result")
 
             init = cf.methods.find_one(name="<clinit>")
             if init:

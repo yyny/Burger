@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+from burger.util import UnknownValue
 import six
 from .topping import Topping
 
@@ -520,7 +521,7 @@ class BiomeTopping(Topping):
                 if const.class_.name.value == listclass:
                     stack.append(biomes[biome_fields[const.name_and_type.name.value]])
                 else:
-                    stack.append(object())
+                    stack.append(UnknownValue("GETSTATIC result of value other than biome list"))
             elif ins.mnemonic == "putstatic":
                 const = ins.operands[0]
                 field = const.name_and_type.name.value

@@ -26,7 +26,7 @@ from .topping import Topping
 from jawa.constants import *
 from jawa.util.descriptor import method_descriptor
 
-from burger.util import WalkerCallback, walk_method
+from burger.util import UnknownValue, WalkerCallback, walk_method
 
 import six
 
@@ -238,7 +238,7 @@ class ItemsTopping(Topping):
                             # Probably returning itself
                             return obj
                     else:
-                        return object()
+                        return UnknownValue("INVOKE result")
 
             def on_get_field(self, ins, const, obj):
                 if const.class_.name.value == blocklist:
@@ -409,7 +409,7 @@ class ItemsTopping(Topping):
                             # Probably returning itself
                             return obj
                     else:
-                        return object()
+                        return UnknownValue("INVOKE result")
 
             def on_get_field(self, ins, const, obj):
                 if const.class_.name == blocklist:

@@ -35,7 +35,7 @@ from jawa.constants import *
 from jawa.transforms import simple_swap
 
 from .topping import Topping
-from burger.util import InvokeDynamicInfo, REF_invokeStatic
+from burger.util import InvokeDynamicInfo, REF_invokeStatic, UnknownValue
 
 SUB_INS_EPSILON = .01
 PACKETBUF_NAME = "packetbuffer" # Used to specially identify the PacketBuffer we care about
@@ -492,7 +492,7 @@ class PacketInstructionsTopping(Topping):
             elif desc.returns.name != "void":
                 if verbose:
                     print("PacketBuffer method that returns something other than PacketBuffer used!")
-                stack.append(object())
+                stack.append(UnknownValue("Not a PacketBuffer"))
 
             return result
         elif name == "<init>":

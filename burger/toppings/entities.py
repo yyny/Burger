@@ -25,7 +25,7 @@ THE SOFTWARE.
 import six
 
 from .topping import Topping
-from burger.util import WalkerCallback, class_from_invokedynamic, walk_method
+from burger.util import UnknownValue, WalkerCallback, class_from_invokedynamic, walk_method
 
 from jawa.constants import *
 from jawa.util.descriptor import method_descriptor
@@ -200,11 +200,11 @@ class EntityTopping(Topping):
 
             def on_new(self, ins, const):
                 # Done once, for the registry, but we don't care
-                return object()
+                return UnknownValue("NEW result")
 
             def on_get_field(self, ins, const, obj):
                 # 19w05a+: used to set entity types.
-                return object()
+                return UnknownValue("GET_FIELD result")
 
         walk_method(cf, method, EntityContext(), verbose)
 

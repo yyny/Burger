@@ -259,6 +259,19 @@ if __name__ == "__main__":
 
         summary.append(aggregate)
 
+    def check(o, path=[]):
+        import six
+        if not isinstance(o, (str, int, float, dict, list, tuple)):
+            print("Unknown value in final output: %s -- %s" % ('.'.join([ str(i) for i in path ]), repr(o)))
+        if isinstance(o, dict):
+            for k,v in six.iteritems(o):
+                check(v, path=[*path, k])
+        elif isinstance(o, (list, tuple)):
+            for i,v in enumerate(o):
+                check(v, path=[*path, i])
+        return o
+
+    check(summary)
     if not compact:
         json.dump(transform_floats(summary), output, sort_keys=True, indent=4)
     else:
